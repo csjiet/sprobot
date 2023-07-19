@@ -3,9 +3,6 @@ from time import sleep
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.common.by import By
-from selenium.common.exceptions import NoSuchElementException
-from selenium.webdriver.common.action_chains import ActionChains
-from selenium.webdriver.common.keys import Keys
 
 import subprocess
 import configparser
@@ -55,9 +52,7 @@ class TwitterAPI:
             # Wait for the next page to load before continuing
             sleep(5)
 
-            # There was unusual login activity on your account. To help keep your account safe, please enter your phone number or username to verify it’s you. detection
-            # Throws and exception if unusual login activity is not detected 
-            unusual_activity_detection = self.driver.find_element(By.XPATH,"//span[contains(text(), 'There was unusual login activity on your account. To help keep your account safe, please enter your phone number or username to verify it’s you')]")
+            unusual_activity_detection = self.driver.find_element(By.XPATH, "//span[contains(text(), 'There was unusual login activity on your account. To help keep your account safe, please enter your phone number of username to verify it's you')]")
             unusual_username = self.driver.find_element(By.XPATH, "//input[@name='text']")
             unusual_username.click()
 
@@ -88,6 +83,8 @@ class TwitterAPI:
             password= self.driver.find_element(By.XPATH,'//input[@type="password"]')
             password.click()
 
+            config = configparser.ConfigParser()
+            config.read('config.ini')
             password.send_keys(config.get('Credentials', 'password'))
 
             print('Password input done')
@@ -104,7 +101,7 @@ class TwitterAPI:
 
             sleep(5)
             keyword = "fredsala"
-            self.driver.get(f"https://twitter.com/{keyword}") 
+            self.driver.get(f'https://twitter.com/{keyword}')
             sleep(3)
 
             # Get first tweet 
