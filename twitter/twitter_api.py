@@ -1,8 +1,4 @@
-import os
-import requests
-import re
-from bs4 import BeautifulSoup
-from lxml import html
+import random
 from time import sleep
 from selenium import webdriver
 from selenium.webdriver.common import desired_capabilities
@@ -65,12 +61,12 @@ class TwitterAPI:
             config.read('config.ini')
 
             self.driver.get("https://twitter.com/i/flow/login")
-            sleep(3)
+            sleep(random.choice([3,4,5]))
 
             username = self.driver.find_element(By.XPATH, "//input[@name='text']")
             username.click()
             username.send_keys(config.get('Credentials', 'email'))
-            sleep(1)
+            sleep(random.choice([1,3,1.2]))
 
             print('email input done')
 
@@ -81,14 +77,14 @@ class TwitterAPI:
             print('Next button done')
 
             # Wait for the next page to load before continuing
-            sleep(5)
+            sleep(random.choice([5,6.3]))
 
             unusual_activity_detection = self.driver.find_element(By.XPATH, "//span[contains(text(), 'There was unusual login')]")
             unusual_username = self.driver.find_element(By.XPATH, "//input[@name='text']")
             unusual_username.click()
 
             unusual_username.send_keys(config.get('Credentials', 'username'))
-            sleep(1)
+            sleep(random.choice([1,1.3]))
 
             next_button = self.driver.find_element(By.XPATH, "//span[contains(text(), 'Next')]")
             next_button.click()
@@ -97,7 +93,7 @@ class TwitterAPI:
             reenter_password = self.driver.find_element(By.XPATH, "//input[@type='password']")
             reenter_password.click()
             reenter_password.send_keys(config.get('Credentials', 'password'))
-            sleep(1)
+            sleep(random.choice([1,1.43]))
 
 
             # Click Log in
@@ -115,7 +111,7 @@ class TwitterAPI:
             reenter_password = self.driver.find_element(By.XPATH, "//input[@type='password']")
             reenter_password.click()
             reenter_password.send_keys(config.get('Credentials', 'password'))
-            sleep(1)
+            sleep(random.choice([1,2]))
 
             # Click Log in
             # Find the 'Log in' button using its XPATH and click it to log in
@@ -131,21 +127,12 @@ class TwitterAPI:
             sleep(5)
             keyword = "fredsala"
             self.driver.get(f'https://twitter.com/{keyword}')
-            sleep(3)
+            sleep(random.choice([3,4.1,5]))
 
             print(self.driver.current_url)
 
             self.driver.execute_script("window.scrollTo(0, 500)")
 
-            # Get first tweet 
-            # tweet = self.driver.find_elements(By.XPATH, '//div[@aria-label="Share Tweet"]')[0]
-            # tweet.click()
-            # sleep(0.5)
-            # click_to_copy = self.driver.find_element(By.XPATH, '//span[contains(text(), "Copy link to Tweet")]')
-            # click_to_copy.click()
-            
-            # tweet = self.driver.find_elements(By.XPATH, '//div[@data-testid="tweetText"]')[0]
-            # tweet.click()
 
             source = self.driver.find_elements(By.XPATH, "//div[@data-testid='tweetText']")[0]
             action = ActionChains(self.driver)
@@ -153,27 +140,12 @@ class TwitterAPI:
             print(self.driver.current_url)
 
 
-
-            url = self.driver.current_url
-            # r = requests.get(url)
-            # sleep(6)
-          
-            # save = ActionChains(self.driver).key_down(Keys.CONTROL).key_down('s').key_up(Keys.CONTROL).key_up('s')
-            # save.perform()
-
-            # soup = BeautifulSoup(r.content, 'html5lib')
-
-            # file_path = "html_dump.html"
-            # with open(file_path, "w") as file:
-            #    file.write(str(html.fromstring(r.content)))
-
-
         except Exception as e:
             print(f"An exception was thrown: {type(e)}")
             print(e)
         finally:
-            # self.driver.close()
-            # self.driver.quit()
+            self.driver.close()
+            self.driver.quit()
             pass
 
 
