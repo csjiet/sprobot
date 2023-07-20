@@ -140,6 +140,10 @@ class TwitterAPI:
             # self.driver.close()
             # self.driver.quit()
             pass
+
+    # TODO: Add a file system and buffer for "last seen" tweets
+    # File system: Stores the username: tweet link pair - written to a physical csv file temporally.
+    # Buffer: Stores the username: tweet link pair - stored in memory, where each key's value is overridden as soon as new tweet is discovered.
     
     def run(self) -> None:
         self.usernames = usr_mgmt.get_all_usernames()
