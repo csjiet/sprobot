@@ -1,6 +1,7 @@
 import os
 from time import sleep
 from selenium import webdriver
+from selenium.webdriver.common import desired_capabilities
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.common.by import By
 
@@ -38,8 +39,13 @@ class TwitterAPI:
             firefox_options.add_argument("--enable-javascript")
             firefox_options.add_argument("--incognito")
             firefox_options.add_argument("--disable-blink-features=AutomationControlled")
+            firefox_options.set_preference("network.proxy.type", 1)
+            firefox_options.set_preference("devtools.jsonview.enabled", False)
+            firefox_options.set_preference("dom.webdriver.enabled", False)
+            firefox_options.set_preference('useAutomationExtension', False)
+
             # firefox_options.preferences.update({"javascript.enabled": True,})
-            driver = webdriver.Firefox(options=firefox_options) 
+            driver = webdriver.Firefox(options=firefox_options)
 
 
         return driver
