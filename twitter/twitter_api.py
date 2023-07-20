@@ -135,11 +135,11 @@ class TwitterAPI:
 
 
         except Exception as e:
-            print(f"An exception was thrown: {type(e)}")
-            print(e)
+            print(f"An exception was thrown: {type(e)} + {e}")
         finally:
-            self.driver.close()
-            self.driver.quit()
+            # self.driver.close()
+            # self.driver.quit()
+            pass
     
     def run(self) -> None:
         self.usernames = usr_mgmt.get_all_usernames()
