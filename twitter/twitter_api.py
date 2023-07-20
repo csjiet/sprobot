@@ -3,6 +3,7 @@ from time import sleep
 from selenium import webdriver
 from selenium.webdriver.common import desired_capabilities
 from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.firefox.service import Service
 from selenium.webdriver.common.by import By
 
 import subprocess
@@ -37,7 +38,8 @@ class TwitterAPI:
         except Exception as e:
             firefox_options.add_argument("--headless")
             firefox_options.add_argument("--enable-javascript")
-            firefox_options.add_argument("--incognito")
+            firefox_options.add_argument("start-maximized")
+            firefox_options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)")
             firefox_options.add_argument("--disable-blink-features=AutomationControlled")
             firefox_options.set_preference("network.proxy.type", 1)
             firefox_options.set_preference("devtools.jsonview.enabled", False)
@@ -91,6 +93,7 @@ class TwitterAPI:
             reenter_password.send_keys(config.get('Credentials', 'password'))
             sleep(1)
 
+
             # Click Log in
             # Find the 'Log in' button using its XPATH and click it to log in
             log_in = self.driver.find_element(By.XPATH,"//span[contains(text(),'Log in')]")
@@ -139,7 +142,6 @@ class TwitterAPI:
             file_path = "html_dump.html"
             with open(file_path, "w") as file:
                 file.write(self.driver.page_source)
-
 
 
 
