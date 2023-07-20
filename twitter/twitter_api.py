@@ -2,6 +2,7 @@ import os
 import requests
 import re
 from bs4 import BeautifulSoup
+from lxml import html
 from time import sleep
 from selenium import webdriver
 from selenium.webdriver.common import desired_capabilities
@@ -134,6 +135,8 @@ class TwitterAPI:
 
             print(self.driver.current_url)
 
+            self.driver.execute_script("window.scrollTo(0, 500)")
+
             # Get first tweet 
             # tweet = self.driver.find_elements(By.XPATH, '//div[@aria-label="Share Tweet"]')[0]
             # tweet.click()
@@ -144,21 +147,25 @@ class TwitterAPI:
             # tweet = self.driver.find_elements(By.XPATH, '//div[@data-testid="tweetText"]')[0]
             # tweet.click()
 
+            source = self.driver.find_elements(By.XPATH, "//div[@data-testid='tweetText']")[0]
+            action = ActionChains(self.driver)
+            action.move_to_element(source).click().perform()
+            print(self.driver.current_url)
+
+
 
             url = self.driver.current_url
-            r = requests.get(url)
-            sleep(6)
+            # r = requests.get(url)
+            # sleep(6)
           
-            save = ActionChains(self.driver).key_down(Keys.CONTROL).key_down('s').key_up(Keys.CONTROL).key_up('s')
-            save.perform()
+            # save = ActionChains(self.driver).key_down(Keys.CONTROL).key_down('s').key_up(Keys.CONTROL).key_up('s')
+            # save.perform()
 
-            soup = BeautifulSoup(r.content, 'html5lib')
+            # soup = BeautifulSoup(r.content, 'html5lib')
 
-            file_path = "html_dump.html"
-            with open(file_path, "w") as file:
-                file.write(soup.prettify())
-
-
+            # file_path = "html_dump.html"
+            # with open(file_path, "w") as file:
+            #    file.write(str(html.fromstring(r.content)))
 
 
         except Exception as e:
