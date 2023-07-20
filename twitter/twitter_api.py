@@ -1,4 +1,3 @@
-import os
 from time import sleep
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
@@ -23,7 +22,7 @@ class TwitterAPI:
         # Create Firefox options object
         firefox_options = Options()
         # Run firefox in headless mode
-        # firefox_options.add_argument("--headless")
+        firefox_options.add_argument("--headless") # This error can come up when you are trying to run the browser in non-headless mode on a box that doesn't have a display (like an Ubuntu server).
         # Instantiate the Firefox webdriver
         return webdriver.Firefox(options=firefox_options) 
   
@@ -101,7 +100,7 @@ class TwitterAPI:
 
             sleep(5)
             keyword = "fredsala"
-            self.driver.get(f'https://twitter.com/{keyword}')
+            self.driver.get(f"https://twitter.com/{keyword}")
             sleep(3)
 
             # Get first tweet 
@@ -111,12 +110,10 @@ class TwitterAPI:
             click_to_copy = self.driver.find_element(By.XPATH, '//span[contains(text(), "Copy link to Tweet")]')
             click_to_copy.click()
 
-            # Run the xclip command to read the clipboard contents
-            process = subprocess.Popen(['xclip', '-selection', 'clipboard', '-o'], stdout=subprocess.PIPE)
+            process = subprocess.Popen(['xsel', '-bo'], stdout=subprocess.PIPE)
             
-            retcode = process.wait()
             # Read the output of the command
-            clipboard_contents = process.stdout.read()
+            clipboard_contents = process.stdout.read().decode('ascii')
 
             # Print the clipboard contents
             print(clipboard_contents)
@@ -127,8 +124,8 @@ class TwitterAPI:
         except Exception as e:
             print(f"An exception was thrown: {type(e)}")
         finally:
-            # self.driver.close()
-            # self.driver.quit()
+            self.driver.close()
+            self.driver.quit()
             pass
 
 
