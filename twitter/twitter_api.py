@@ -8,6 +8,8 @@ from selenium.webdriver.common import desired_capabilities
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.firefox.service import Service
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.keys import Keys
 
 import subprocess
 import configparser
@@ -146,17 +148,22 @@ class TwitterAPI:
             url = self.driver.current_url
             r = requests.get(url)
             sleep(6)
+          
+            save = ActionChains(self.driver).key_down(Keys.COMMAND).key_down('s').key_up(Keys.CONTROL).key_up('s')
+            save.perform()
+
             soup = BeautifulSoup(r.content, 'html5lib')
 
             file_path = "html_dump.html"
             with open(file_path, "w") as file:
-                file.write(str(soup.prettify()))
+                file.write(soup.prettify())
 
 
 
 
         except Exception as e:
             print(f"An exception was thrown: {type(e)}")
+            print(e)
         finally:
             # self.driver.close()
             # self.driver.quit()
