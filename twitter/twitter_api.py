@@ -1,3 +1,4 @@
+import os
 from time import sleep
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
@@ -22,9 +23,21 @@ class TwitterAPI:
         # Create Firefox options object
         firefox_options = Options()
         # Run firefox in headless mode
-        firefox_options.add_argument("--headless") # This error can come up when you are trying to run the browser in non-headless mode on a box that doesn't have a display (like an Ubuntu server).
+        # firefox_options.add_argument("--headless")
         # Instantiate the Firefox webdriver
-        return webdriver.Firefox(options=firefox_options) 
+
+        # Checks if device has a monitor 
+        driver = None
+        try:
+            driver = webdriver.Firefox(options=firefox_options) 
+
+        # If device does nto have a monitor, run browser using the headless option
+        except Exception as e:
+            firefox_options.add_argument("--headless")
+            driver = webdriver.Firefox(options=firefox_options) 
+
+
+        return driver
   
     def twitter_login(self):
         # Login Twitter
@@ -77,17 +90,14 @@ class TwitterAPI:
         except Exception as e:
             # Proceed to normal login
             print('Dang exception again')
+            
+            # Reenter your password again
+            reenter_password = self.driver.find_element(By.XPATH, "//input[@type='password']")
+            reenter_password.click()
+            reenter_password.send_keys(config.get('Credentials', 'password'))
+            sleep(1)
 
-            # Find the password input field 
-            password= self.driver.find_element(By.XPATH,'//input[@type="password"]')
-            password.click()
-
-            config = configparser.ConfigParser()
-            config.read('config.ini')
-            password.send_keys(config.get('Credentials', 'password'))
-
-            print('Password input done')
-
+            # Click Log in
             # Find the 'Log in' button using its XPATH and click it to log in
             log_in = self.driver.find_element(By.XPATH,"//span[contains(text(),'Log in')]")
             log_in.click()
@@ -100,23 +110,24 @@ class TwitterAPI:
 
             sleep(5)
             keyword = "fredsala"
-            self.driver.get(f"https://twitter.com/{keyword}")
+            self.driver.get(f'https://twitter.com/{keyword}')
             sleep(3)
 
             # Get first tweet 
-            tweet = self.driver.find_elements(By.XPATH, '//div[@aria-label="Share Tweet"]')[0]
-            tweet.click()
-            sleep(0.5)
-            click_to_copy = self.driver.find_element(By.XPATH, '//span[contains(text(), "Copy link to Tweet")]')
-            click_to_copy.click()
-
-            process = subprocess.Popen(['xsel', '-bo'], stdout=subprocess.PIPE)
+            # tweet = self.driver.find_elements(By.XPATH, '//div[@aria-label="Share Tweet"]')[0]
+            # tweet.click()
+            # sleep(0.5)
+            # click_to_copy = self.driver.find_element(By.XPATH, '//span[contains(text(), "Copy link to Tweet")]')
+            # click_to_copy.click()
             
-            # Read the output of the command
-            clipboard_contents = process.stdout.read().decode('ascii')
+            tweet = self.driver.find_elements(By.XPATH, '//article[@data-testid="tweet"]')[0]
+            tweet.click()
 
-            # Print the clipboard contents
-            print(clipboard_contents)
+            current_url = self.driver.current_url
+
+            print(current_url)
+
+             
 
 
 
@@ -124,8 +135,8 @@ class TwitterAPI:
         except Exception as e:
             print(f"An exception was thrown: {type(e)}")
         finally:
-            self.driver.close()
-            self.driver.quit()
+            # self.driver.close()
+            # self.driver.quit()
             pass
 
 
