@@ -25,11 +25,7 @@ class TwitterAPI:
 
     def web_driver_init(self):
         # Create Firefox options object
-        # firefox_options = Options()
         firefox_options = webdriver.FirefoxOptions()
-        # Run firefox in headless mode
-        # firefox_options.add_argument("--headless")
-        # Instantiate the Firefox webdriver
 
         # Checks if device has a monitor 
         driver = None
@@ -121,18 +117,16 @@ class TwitterAPI:
             print('Login button done')
 
         
+
+    def username_search(self, username):
         # Search account
         try:
-
             sleep(5)
-            keyword = "fredsala"
-            self.driver.get(f'https://twitter.com/{keyword}')
+            # Visit personnel's website
+            self.driver.get(f'https://twitter.com/{username}')
             sleep(random.choice([3,4.1,5]))
 
-            print(self.driver.current_url)
-
             self.driver.execute_script("window.scrollTo(0, 500)")
-
 
             source = self.driver.find_elements(By.XPATH, "//div[@data-testid='tweetText']")[0]
             action = ActionChains(self.driver)
@@ -146,17 +140,12 @@ class TwitterAPI:
         finally:
             self.driver.close()
             self.driver.quit()
-            pass
-
-
-
-    def get_user_metadata(self, username) -> None:
-        pass
-
     
     def run(self) -> None:
         self.usernames = usr_mgmt.get_all_usernames()
         self.twitter_login()
+        for username in self.usernames:
+            self.username_search(username)
         print(self.usernames)
     
 if __name__ == "__main__":
