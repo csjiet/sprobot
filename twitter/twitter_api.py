@@ -122,12 +122,14 @@ class TwitterAPI:
             # click_to_copy = self.driver.find_element(By.XPATH, '//span[contains(text(), "Copy link to Tweet")]')
             # click_to_copy.click()
             
-            tweet = self.driver.find_elements(By.XPATH, '//div[@data-testid="tweetText"]')[0]
-            tweet.click()
+            # tweet = self.driver.find_elements(By.XPATH, '//div[@data-testid="tweetText"]')[0]
+            # tweet.click()
 
-            current_url = self.driver.current_url
+            file_path = "html_dump.html"
+            with open(file_path, "w") as file:
+                file.write(self.driver.page_source)
 
-            print(current_url)
+
 
 
         except Exception as e:
