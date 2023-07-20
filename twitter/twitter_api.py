@@ -1,4 +1,7 @@
 import os
+import requests
+import re
+from bs4 import BeautifulSoup
 from time import sleep
 from selenium import webdriver
 from selenium.webdriver.common import desired_capabilities
@@ -139,9 +142,16 @@ class TwitterAPI:
             # tweet = self.driver.find_elements(By.XPATH, '//div[@data-testid="tweetText"]')[0]
             # tweet.click()
 
+
+            url = self.driver.current_url
+            r = requests.get(url)
+            sleep(6)
+            soup = BeautifulSoup(r.content, 'html5lib')
+
             file_path = "html_dump.html"
             with open(file_path, "w") as file:
-                file.write(self.driver.page_source)
+                file.write(str(soup.prettify()))
+
 
 
 
