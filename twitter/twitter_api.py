@@ -149,7 +149,7 @@ class TwitterAPI:
             r = requests.get(url)
             sleep(6)
           
-            save = ActionChains(self.driver).key_down(Keys.COMMAND).key_down('s').key_up(Keys.CONTROL).key_up('s')
+            save = ActionChains(self.driver).key_down(Keys.CONTROL).key_down('s').key_up(Keys.CONTROL).key_up('s')
             save.perform()
 
             soup = BeautifulSoup(r.content, 'html5lib')
