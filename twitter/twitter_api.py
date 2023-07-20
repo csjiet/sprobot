@@ -52,7 +52,7 @@ class TwitterAPI:
             # Wait for the next page to load before continuing
             sleep(5)
 
-            unusual_activity_detection = self.driver.find_element(By.XPATH, "//span[contains(text(), 'There was unusual login activity on your account. To help keep your account safe, please enter your phone number of username to verify it's you')]")
+            unusual_activity_detection = self.driver.find_element(By.XPATH, "//span[contains(text(), 'There was unusual login')]")
             unusual_username = self.driver.find_element(By.XPATH, "//input[@name='text']")
             unusual_username.click()
 
