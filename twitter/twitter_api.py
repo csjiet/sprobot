@@ -21,7 +21,8 @@ class TwitterAPI:
 
     def web_driver_init(self):
         # Create Firefox options object
-        firefox_options = Options()
+        # firefox_options = Options()
+        firefox_options = webdriver.FirefoxOptions()
         # Run firefox in headless mode
         # firefox_options.add_argument("--headless")
         # Instantiate the Firefox webdriver
@@ -34,6 +35,10 @@ class TwitterAPI:
         # If device does nto have a monitor, run browser using the headless option
         except Exception as e:
             firefox_options.add_argument("--headless")
+            firefox_options.add_argument("--enable-javascript")
+            firefox_options.add_argument("--incognito")
+            firefox_options.add_argument("--disable-blink-features=AutomationControlled")
+            # firefox_options.preferences.update({"javascript.enabled": True,})
             driver = webdriver.Firefox(options=firefox_options) 
 
 
