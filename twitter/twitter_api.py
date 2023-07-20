@@ -113,6 +113,8 @@ class TwitterAPI:
             self.driver.get(f'https://twitter.com/{keyword}')
             sleep(3)
 
+            print(self.driver.current_url)
+
             # Get first tweet 
             # tweet = self.driver.find_elements(By.XPATH, '//div[@aria-label="Share Tweet"]')[0]
             # tweet.click()
@@ -126,10 +128,6 @@ class TwitterAPI:
             current_url = self.driver.current_url
 
             print(current_url)
-
-             
-
-
 
 
         except Exception as e:
