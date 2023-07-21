@@ -1,6 +1,7 @@
 import random
 import json
 import configparser
+import sys
 from time import sleep
 from selenium import webdriver
 from selenium.webdriver.common import desired_capabilities
@@ -17,12 +18,14 @@ class TwitterAPI:
     def __init__(self):
 
         self.file_management = FileMgmt() 
-        self.driver = self.web_driver_init() 
-      
+        self.driver = None 
         self.usernames = self.file_management.read_all_usernames_from_file()
 
         self.usr_latest_tweets = {}
-        with open("users_latest_tweets.json") as jsonfile:
+        # with open("./twitter/users_latest_tweets.json") as jsonfile:
+            # self.usr_latest_tweets = json.load(jsonfile) 
+        
+        with open(f"{sys.path[1]}/users_latest_tweets.json") as jsonfile:
             self.usr_latest_tweets = json.load(jsonfile) 
 
     def web_driver_init(self):
@@ -177,14 +180,15 @@ class TwitterAPI:
 
     # Webscraping cycle
     def run(self) -> None:
+        self.driver = self.web_driver_init()
         self.twitter_login()
         for username in self.usernames:
             tweet_link = self.username_search(username)
             self.update_latest_tweets(username, tweet_link)
 
 
-
     
 if __name__ == "__main__":
+    sys.path.insert(1, ".")
     twitter_api = TwitterAPI()
     twitter_api.run()

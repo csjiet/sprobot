@@ -1,11 +1,16 @@
 import json
+import sys
+
 # This file contains user management functions
 
 class FileMgmt:
 
     def __init__(self):
-        self.username_file_path = './usernames.txt'
-        self.user_tweet_json_file_path = './users_latest_tweets.json'
+        # self.username_file_path = './twitter/usernames.txt'
+        # self.user_tweet_json_file_path = './twitter/users_latest_tweets.json'
+        
+        self.username_file_path = f'{sys.path[1]}/usernames.txt'
+        self.user_tweet_json_file_path = f'{sys.path[1]}/users_latest_tweets.json'
 
     # Reads the latest list of usernames from username_list.txt 
     def read_all_usernames_from_file(self) -> list:
