@@ -11,16 +11,13 @@ from selenium.webdriver.common.keys import Keys
 
 import configparser
 
-import usr_mgmt
+from file_mgmt import FileMgmt 
 
 class TwitterAPI:
 
     def __init__(self):
-        # Load environment variables from .env file
-        # env_path = pathlib2.Path('..') / '.env'
-        # load_dotenv(dotenv_path=env_path)
 
-        self.usernames = usr_mgmt.get_all_usernames()
+        self.file_management = FileMgmt() 
         self.driver = self.web_driver_init() 
       
         self.usr_latest_tweets = {}
@@ -70,13 +67,9 @@ class TwitterAPI:
             username.send_keys(config.get('Credentials', 'email'))
             sleep(random.choice([1,3,1.2]))
 
-            print('email input done')
-
             # Find the 'Next' button (second last button (idx: -2)) using its XPATH and click it to move to the password field
             next_button = self.driver.find_elements(By.XPATH,"//div[@role='button']")[-2]
             next_button.click()
-
-            print('Next button done')
 
             # Wait for the next page to load before continuing
             sleep(random.choice([5,6.3]))
@@ -151,17 +144,26 @@ class TwitterAPI:
             # self.driver.quit()
             pass
 
-    def sync_files_with_usernames(self, users_latest_tweets_dict):
-        filtered_dict = {key: value for key, value in users_latest_tweets_dict.items() if key in self.usernames}
-        self.usr_latest_tweets = filtered_dict
+    def sync_username_buffers(self, usernames_list):
+        self.usr_latest_tweets = {key: value for key, value in self.usr_latest_tweets.items() if key in usernames_list}
+
+    def add_username(self):
+        usernames_list = self.file_management.read_all_usernames_from_file()
+        self.sync_username_buffers(usernames_list)
+
+    def remove_username(self):
+        usernames_list = self.file_management.read_all_usernames_from_file()
+        self.sync_username_buffers(usernames_list)
+
+
+        
 
     def run(self) -> None:
         self.twitter_login()
-        for username in self.usernames:
+        usernames = self.file_management.read_all_usernames_from_file()
+        for username in usernames:
             tweet_link = self.username_search(username)
             self.update_latest_tweets(username, tweet_link)
-       
-        self.sync_files_with_usernames(self.usr_latest_tweets)
 
         with open("users_latest_tweets.json", "w") as op:
             json.dump(self.usr_latest_tweets, op, indent = 4)
