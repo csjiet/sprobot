@@ -1,4 +1,5 @@
 import random
+import json
 from time import sleep
 from selenium import webdriver
 from selenium.webdriver.common import desired_capabilities
@@ -8,7 +9,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
 
-import subprocess
 import configparser
 
 import usr_mgmt
@@ -20,8 +20,9 @@ class TwitterAPI:
         # env_path = pathlib2.Path('..') / '.env'
         # load_dotenv(dotenv_path=env_path)
 
-        self.usernames = []
+        self.usernames = usr_mgmt.get_all_usernames()
         self.driver = self.web_driver_init() 
+        self.usr_latest_tweets = {}
 
     def web_driver_init(self):
         # Create Firefox options object
@@ -116,7 +117,10 @@ class TwitterAPI:
 
             print('Login button done')
 
-        
+       
+    def update_latest_tweets(self, username, tweet_link):
+        self.usr_latest_tweets[username] = tweet_link
+
 
     def username_search(self, username):
         # Search account
@@ -131,26 +135,26 @@ class TwitterAPI:
             source = self.driver.find_elements(By.XPATH, "//div[@data-testid='tweetText']")[0]
             action = ActionChains(self.driver)
             action.move_to_element(source).click().perform()
-            print(self.driver.current_url)
+            return self.driver.current_url
 
 
         except Exception as e:
-            print(f"An exception was thrown: {type(e)} + {e}")
+            print(f"Non fatal exception was caught: {type(e)} + {e}")
         finally:
             # self.driver.close()
             # self.driver.quit()
             pass
 
-    # TODO: Add a file system and buffer for "last seen" tweets
-    # File system: Stores the username: tweet link pair - written to a physical csv file temporally.
-    # Buffer: Stores the username: tweet link pair - stored in memory, where each key's value is overridden as soon as new tweet is discovered.
-    
     def run(self) -> None:
-        self.usernames = usr_mgmt.get_all_usernames()
         self.twitter_login()
         for username in self.usernames:
-            self.username_search(username)
-        print(self.usernames)
+            tweet_link = self.username_search(username)
+            self.update_latest_tweets(username, tweet_link)
+       
+        with open("users_latest_tweets.json", "w") as op:
+            json.dump(self.usr_latest_tweets, op, indent = 4)
+
+
     
 if __name__ == "__main__":
     twitter_api = TwitterAPI()
