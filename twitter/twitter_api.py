@@ -1,5 +1,6 @@
 import random
 import json
+import configparser
 from time import sleep
 from selenium import webdriver
 from selenium.webdriver.common import desired_capabilities
@@ -8,8 +9,6 @@ from selenium.webdriver.firefox.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
-
-import configparser
 
 from file_mgmt import FileMgmt 
 
@@ -20,11 +19,11 @@ class TwitterAPI:
         self.file_management = FileMgmt() 
         self.driver = self.web_driver_init() 
       
+        self.usernames = self.file_management.read_all_usernames_from_file()
+
         self.usr_latest_tweets = {}
         with open("users_latest_tweets.json") as jsonfile:
             self.usr_latest_tweets = json.load(jsonfile) 
-
-
 
     def web_driver_init(self):
         # Create Firefox options object
@@ -50,10 +49,9 @@ class TwitterAPI:
             # firefox_options.preferences.update({"javascript.enabled": True,})
             driver = webdriver.Firefox(options=firefox_options)
 
-
         return driver
   
-    def twitter_login(self):
+    def twitter_login(self) -> None:
         # Login Twitter
         try:
             config = configparser.ConfigParser()
@@ -113,15 +111,13 @@ class TwitterAPI:
             log_in = self.driver.find_element(By.XPATH,"//span[contains(text(),'Log in')]")
             log_in.click()
 
-            print('Login button done')
-
        
-    def update_latest_tweets(self, username, tweet_link):
+    def update_latest_tweets(self, username, tweet_link) -> None:
         self.usr_latest_tweets[username] = tweet_link
         print(self.usr_latest_tweets)
 
 
-    def username_search(self, username):
+    def username_search(self, username) -> None:
         # Search account
         try:
             sleep(5)
@@ -144,29 +140,48 @@ class TwitterAPI:
             # self.driver.quit()
             pass
 
-    def sync_username_buffers(self, usernames_list):
-        self.usr_latest_tweets = {key: value for key, value in self.usr_latest_tweets.items() if key in usernames_list}
+    # Add username to username buffer 
+    def add_username(self, username_to_add) -> None:
 
-    def add_username(self):
-        usernames_list = self.file_management.read_all_usernames_from_file()
-        self.sync_username_buffers(usernames_list)
+        # Check if username has already been added
+        if username_to_add in self.usernames:
+            return
 
-    def remove_username(self):
-        usernames_list = self.file_management.read_all_usernames_from_file()
-        self.sync_username_buffers(usernames_list)
+        # Append object to username buffer
+        self.usernames.append(username_to_add)
+
+        # Add object as key to the username-tweet dictionary
+        self.usr_latest_tweets.setdefault(username_to_add, None)
 
 
-        
+    # Remove username from username buffer 
+    def remove_username(self, username_to_remove) -> None:
 
+        # Check if username has already been removed
+        if username_to_remove not in self.usernames:
+            return
+
+        # Remove object from usernames list
+        self.usernames = [usr for usr in self.usernames if usr != username_to_remove]
+
+        # Remove key value pair where key matches removed username
+        self.usr_latest_tweets = {key: value for key, value in self.usr_latest_tweets.items() if key in self.usernames}
+
+
+    # Write all buffers to files
+    def sync_buffer_with_files(self) -> None:
+        self.file_management.write_username_list_to_file(self.usernames)
+        self.file_management.write_username_tweet_dict_to_file(self.usr_latest_tweets)
+        return None
+
+
+    # Webscraping cycle
     def run(self) -> None:
         self.twitter_login()
-        usernames = self.file_management.read_all_usernames_from_file()
-        for username in usernames:
+        for username in self.usernames:
             tweet_link = self.username_search(username)
             self.update_latest_tweets(username, tweet_link)
 
-        with open("users_latest_tweets.json", "w") as op:
-            json.dump(self.usr_latest_tweets, op, indent = 4)
 
 
     
