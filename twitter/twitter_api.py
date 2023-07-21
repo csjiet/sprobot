@@ -22,7 +22,12 @@ class TwitterAPI:
 
         self.usernames = usr_mgmt.get_all_usernames()
         self.driver = self.web_driver_init() 
+      
         self.usr_latest_tweets = {}
+        with open("users_latest_tweets.json") as jsonfile:
+            self.usr_latest_tweets = json.load(jsonfile) 
+
+
 
     def web_driver_init(self):
         # Create Firefox options object
@@ -120,6 +125,7 @@ class TwitterAPI:
        
     def update_latest_tweets(self, username, tweet_link):
         self.usr_latest_tweets[username] = tweet_link
+        print(self.usr_latest_tweets)
 
 
     def username_search(self, username):
@@ -145,12 +151,18 @@ class TwitterAPI:
             # self.driver.quit()
             pass
 
+    def sync_files_with_usernames(self, users_latest_tweets_dict):
+        filtered_dict = {key: value for key, value in users_latest_tweets_dict.items() if key in self.usernames}
+        self.usr_latest_tweets = filtered_dict
+
     def run(self) -> None:
         self.twitter_login()
         for username in self.usernames:
             tweet_link = self.username_search(username)
             self.update_latest_tweets(username, tweet_link)
        
+        self.sync_files_with_usernames(self.usr_latest_tweets)
+
         with open("users_latest_tweets.json", "w") as op:
             json.dump(self.usr_latest_tweets, op, indent = 4)
 
