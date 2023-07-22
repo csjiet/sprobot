@@ -23,7 +23,7 @@ class TwitterAPI:
 
         self.usr_latest_tweets = {}
         
-        with open(f"{sys.path[1]}/users_latest_tweets.json") as jsonfile:
+        with open(f"./twitter/users_latest_tweets.json") as jsonfile:
             self.usr_latest_tweets = json.load(jsonfile) 
 
     def get_usernames(self):
@@ -62,7 +62,7 @@ class TwitterAPI:
         # Login Twitter
         try:
             config = configparser.ConfigParser()
-            config.read('config.ini')
+            config.read('./twitter/config.ini')
 
             self.driver.get("https://twitter.com/i/flow/login")
             sleep(random.choice([3,4,5]))
