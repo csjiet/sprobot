@@ -22,11 +22,15 @@ class TwitterAPI:
         self.usernames = self.file_management.read_all_usernames_from_file()
 
         self.usr_latest_tweets = {}
-        # with open("./twitter/users_latest_tweets.json") as jsonfile:
-            # self.usr_latest_tweets = json.load(jsonfile) 
         
         with open(f"{sys.path[1]}/users_latest_tweets.json") as jsonfile:
             self.usr_latest_tweets = json.load(jsonfile) 
+
+    def get_usernames(self):
+        return self.usernames
+
+    def get_user_latest_tweets(self):
+        return self.usr_latest_tweets
 
     def web_driver_init(self):
         # Create Firefox options object
@@ -116,9 +120,8 @@ class TwitterAPI:
 
        
     def update_latest_tweets(self, username, tweet_link) -> None:
-        self.usr_latest_tweets[username] = tweet_link
-        print(self.usr_latest_tweets)
 
+        self.usr_latest_tweets[username] = tweet_link
 
     def username_search(self, username) -> None:
         # Search account
@@ -138,10 +141,6 @@ class TwitterAPI:
 
         except Exception as e:
             print(f"Non fatal exception was caught: {type(e)} + {e}")
-        finally:
-            # self.driver.close()
-            # self.driver.quit()
-            pass
 
     # Add username to username buffer 
     def add_username(self, username_to_add) -> None:
@@ -186,6 +185,9 @@ class TwitterAPI:
             tweet_link = self.username_search(username)
             self.update_latest_tweets(username, tweet_link)
 
+        sleep(random.choice([1,2,4.3,4.75,5,3.14]))
+        self.driver.close()
+        self.driver.quit()
 
     
 if __name__ == "__main__":
