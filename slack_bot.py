@@ -1,7 +1,6 @@
 import sys
+sys.path.insert(1, './twitter')
 import ssl
-sys.path.insert(0,'.')
-sys.path.insert(1,'./twitter')
 import configparser
 import slack
 from twitter_api import TwitterAPI

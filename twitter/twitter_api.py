@@ -189,6 +189,6 @@ class TwitterAPI:
 
     
 if __name__ == "__main__":
-    sys.path.insert(1, ".")
+    sys.path.insert(1,".")
     twitter_api = TwitterAPI()
     twitter_api.run()
