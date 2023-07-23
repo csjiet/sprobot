@@ -30,7 +30,7 @@ class TwitterAPI:
         return self.usernames
 
     def get_user_latest_tweets(self):
-        return self.usr_latest_tweets
+        return self.usr_latest_tweets.copy()
 
     def web_driver_init(self):
         # Create Firefox options object
@@ -65,7 +65,7 @@ class TwitterAPI:
             config.read('./twitter/config.ini')
 
             self.driver.get("https://twitter.com/i/flow/login")
-            sleep(random.choice([3,4,5]))
+            sleep(random.choice([6,4,5]))
 
             username = self.driver.find_element(By.XPATH, "//input[@name='text']")
             username.click()
@@ -129,12 +129,25 @@ class TwitterAPI:
             sleep(5)
             # Visit personnel's website
             self.driver.get(f'https://twitter.com/{username}')
-            sleep(random.choice([3,4.1,5]))
+            sleep(random.choice([6,5.1,5,7.2]))
 
             self.driver.execute_script("window.scrollTo(0, 500)")
 
-            source = self.driver.find_elements(By.XPATH, "//div[@data-testid='tweetText']")[0]
             action = ActionChains(self.driver)
+
+            # source = self.driver.find_elements(By.XPATH, "//div[@data-testid='tweetText']")[0]
+            # Simulate some unnecesary mouse movements
+            # Perform n random mouse movements
+            for _ in range(random.choice([5,7,10])):
+                x_offset = random.randint(-10, 10)
+                y_offset = random.randint(-10, 10)
+
+                # TODO: Keep mouse movements within browser bounds
+                # Move the mouse by the random offsets
+                # action.move_by_offset(x_offset, y_offset)
+                # sleep(random.choice([0.5, 1,1.5,1.3,1.2,2]))
+
+            source = self.driver.find_elements(By.XPATH, "//div[@data-testid='tweetText']")[0]
             action.move_to_element(source).click().perform()
             return self.driver.current_url
 
@@ -188,6 +201,7 @@ class TwitterAPI:
         sleep(random.choice([1,2,4.3,4.75,5,3.14]))
         self.driver.close()
         self.driver.quit()
+        self.driver = None
 
     
 if __name__ == "__main__":

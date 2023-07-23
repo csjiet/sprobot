@@ -1,6 +1,8 @@
 import os
 import sys
 import random
+from datetime import datetime
+from datetime import time
 from time import sleep
 sys.path.insert(1, "./twitter")
 import ssl
@@ -59,6 +61,7 @@ class SlackBot:
                 content = self.notification_text_wrapper(producer[key], username = key)
                 self.notification_alarm(content)
                 continue
+
             if consumer[key] != producer[key] and filter_func(k = key, v = producer[key]):
                 content = self.notification_text_wrapper(producer[key], username = key)
                 self.notification_alarm(content)
@@ -67,16 +70,37 @@ class SlackBot:
     def sync_tweet_consumer_producer(self):
         self.latest_usr_tweet_pair = self.twitter_api.get_user_latest_tweets()
 
-    def run(self):
-        # text = self.notification_text_wrapper("https://twitter.com/stevebach/status/1678756180196204545", username = '@fred')
-        # self.notification_alarm(text)
-        while True:
-            self.twitter_api.run()
-            self.status_checker(self.filter_out_non_user_content)
-            self.sync_tweet_consumer_producer()
-            sleep(random.choice([3,4.5, 4,5, 3.3, 8, 10, 9.33, 8.5]))
-            os.system("pkill firefox")
+    def is_notification_unmute(self, current_time):
+        the_am_start = time(random.choice([6,7,8]), random.choice([1,2,3,4,5,6,7,8,9,10,30]))
+        the_am_end= time(11,59)
 
+        the_pm_start = time(12, 0)
+        the_pm_end = time(23, random.choice([50,51,52,53,54,55,56,57,58,59]))
+
+        # Allow between ~6/7/8am - 11.59am, 12pm - 11pm
+        # TODO: Allow this return rule to manifest upon deployment
+        # return the_am_start <= current_time <= the_am_end or the_pm_start <= current_time <= the_pm_end 
+        return True 
+
+    def run(self):
+        # breakpoint()
+        count = 1
+        while True:
+            print(f"### Run: {count} ###")
+            current_time = datetime.now().time()
+
+            if self.is_notification_unmute(current_time):
+                self.twitter_api.run()
+                self.status_checker(self.filter_out_non_user_content)
+                self.sync_tweet_consumer_producer()
+                os.system("pkill firefox")
+            # self.twitter_api.sync_buffer_with_files()
+
+            sleep(random.choice([3,3.2,3.7,4, 5, 5.2]))
+            # sleep(random.choice([60*23, 60*20, 60*26, 60*29, 60*24, 60*30]))
+            count+=1
+            if count >= 20:
+                break
 
 if __name__ == "__main__":
     bot = SlackBot()
