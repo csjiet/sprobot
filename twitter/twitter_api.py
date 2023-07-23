@@ -26,6 +26,9 @@ class TwitterAPI:
         with open(f"./twitter/users_latest_tweets.json") as jsonfile:
             self.usr_latest_tweets = json.load(jsonfile) 
 
+        # Sync the user-tweet pairs to list of usernames from username.txt
+        self.usr_latest_tweets = {key: self.usr_latest_tweets[key] for key in self.usernames if key in self.usr_latest_tweets}
+
     def get_usernames(self):
         return self.usernames
 
@@ -91,6 +94,7 @@ class TwitterAPI:
 
             # Reenter your password again
             reenter_password = self.driver.find_element(By.XPATH, "//input[@type='password']")
+            sleep(1)
             reenter_password.click()
             reenter_password.send_keys(config.get('Credentials', 'password'))
             sleep(random.choice([1,1.43]))
@@ -106,9 +110,11 @@ class TwitterAPI:
         except Exception as e:
             # Proceed to normal login
             print('Dang exception again')
-            
+           
+            sleep(3)
             # Reenter your password again
             reenter_password = self.driver.find_element(By.XPATH, "//input[@type='password']")
+            sleep(1)
             reenter_password.click()
             reenter_password.send_keys(config.get('Credentials', 'password'))
             sleep(random.choice([1,2]))
@@ -135,18 +141,6 @@ class TwitterAPI:
             self.driver.execute_script("window.scrollTo(0, 500)")
 
             action = ActionChains(self.driver)
-
-            # source = self.driver.find_elements(By.XPATH, "//div[@data-testid='tweetText']")[0]
-            # Simulate some unnecesary mouse movements
-            # Perform n random mouse movements
-            for _ in range(random.choice([5,7,10])):
-                x_offset = random.randint(-10, 10)
-                y_offset = random.randint(-10, 10)
-
-                # TODO: Keep mouse movements within browser bounds
-                # Move the mouse by the random offsets
-                # action.move_by_offset(x_offset, y_offset)
-                # sleep(random.choice([0.5, 1,1.5,1.3,1.2,2]))
 
             source = self.driver.find_elements(By.XPATH, "//div[@data-testid='tweetText']")[0]
             action.move_to_element(source).click().perform()
@@ -199,7 +193,8 @@ class TwitterAPI:
             print(f"Searching @{username} ...")
             tweet_link = self.username_search(username)
             self.update_latest_tweets(username, tweet_link)
-
+        
+        print(str(self.usr_latest_tweets))
         sleep(random.choice([1,2,4.3,4.75,5,3.14]))
         self.driver.close()
         self.driver.quit()

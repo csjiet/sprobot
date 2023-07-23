@@ -14,17 +14,20 @@ from twitter_api import TwitterAPI
 class SlackBot:
     def __init__(self):
 
-
-        # Slack tokens
-        config = configparser.ConfigParser()
-        config.read(f'./twitter/config.ini')
-        self._SLACK_API_TOKEN = config.get('Credentials','slack_api_token')
+        # Instantiating Twitter api class
         self.twitter_api = TwitterAPI()
         self.latest_usr_tweet_pair = self.twitter_api.get_user_latest_tweets()
 
+        # Retrieve Slack tokens
+        config = configparser.ConfigParser()
+        config.read(f'./twitter/config.ini')
+        self._SLACK_API_TOKEN = config.get('Credentials','slack_api_token')
+
+        # Preparing slack ssl context
         self.ssl_context = ssl.create_default_context()
         self.ssl_context.check_hostname = False
         self.ssl_context.verify_mode = ssl.CERT_NONE
+
         # Create a Slack client
         self.slack_client = slack.WebClient(token=self._SLACK_API_TOKEN, ssl=self.ssl_context)
 
@@ -55,12 +58,20 @@ class SlackBot:
         consumer = self.latest_usr_tweet_pair
         producer = self.twitter_api.get_user_latest_tweets()
 
+        # print(f'consumer: \n {str(consumer)}')
+        # print(f'producer: \n {str(producer)}')
+
         # Check if consumer - local copy of user-tweet pair and producer - twitter api tweets are in sync
         for key in producer:
-            if key not in consumer and filter_func(k= key, v= producer[key]):
-                content = self.notification_text_wrapper(producer[key], username = key)
-                self.notification_alarm(content)
-                continue
+            if key not in consumer:
+
+                # Key is not in consumer, so add into consumer
+                self.latest_usr_tweet_pair[key] = producer[key]
+
+                if filter_func(k= key, v= producer[key]):
+                    content = self.notification_text_wrapper(producer[key], username = key)
+                    self.notification_alarm(content)
+                    continue
 
             if consumer[key] != producer[key] and filter_func(k = key, v = producer[key]):
                 content = self.notification_text_wrapper(producer[key], username = key)
@@ -79,8 +90,8 @@ class SlackBot:
 
         # Allow between ~6/7/8am - 11.59am, 12pm - 11pm
         # TODO: Allow this return rule to manifest upon deployment
-        # return the_am_start <= current_time <= the_am_end or the_pm_start <= current_time <= the_pm_end 
-        return True 
+        return the_am_start <= current_time <= the_am_end or the_pm_start <= current_time <= the_pm_end 
+        # return True 
 
     def run(self):
         # breakpoint()
@@ -97,11 +108,11 @@ class SlackBot:
             # self.twitter_api.sync_buffer_with_files()
 
             print(f"### Done! ###")
-            # sleep(random.choice([3,3.2,3.7,4, 5, 5.2]))
-            sleep(random.choice([60*23, 60*20, 60*26, 60*29, 60*24, 60*30]))
+            sleep(random.choice([3,3.2,3.7,4, 5, 5.2]))
+            # sleep(random.choice([60*23, 60*20, 60*26, 60*29, 60*24, 60*30]))
             count+=1
-            if count >= 20:
-                break
+            # if count >= 20:
+                # break
 
 if __name__ == "__main__":
     bot = SlackBot()
