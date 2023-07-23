@@ -86,7 +86,7 @@ class SlackBot:
         # breakpoint()
         count = 1
         while True:
-            print(f"### Run: {count} ###")
+            print(f"### Run: {count} time: {datetime.now().time()}###")
             current_time = datetime.now().time()
 
             if self.is_notification_unmute(current_time):
@@ -96,8 +96,8 @@ class SlackBot:
                 os.system("pkill firefox")
             # self.twitter_api.sync_buffer_with_files()
 
-            sleep(random.choice([3,3.2,3.7,4, 5, 5.2]))
-            # sleep(random.choice([60*23, 60*20, 60*26, 60*29, 60*24, 60*30]))
+            # sleep(random.choice([3,3.2,3.7,4, 5, 5.2]))
+            sleep(random.choice([60*23, 60*20, 60*26, 60*29, 60*24, 60*30]))
             count+=1
             if count >= 20:
                 break
