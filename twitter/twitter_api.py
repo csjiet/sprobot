@@ -130,6 +130,7 @@ class TwitterAPI:
             # Visit personnel's website
             self.driver.get(f'https://twitter.com/{username}')
             sleep(random.choice([6,5.1,5,7.2]))
+            sleep(6) # TODO: Should be removed - added to compensate for slow internet connection
 
             self.driver.execute_script("window.scrollTo(0, 500)")
 
@@ -195,6 +196,7 @@ class TwitterAPI:
         self.driver = self.web_driver_init()
         self.twitter_login()
         for username in self.usernames:
+            print(f"Searching @{username} ...")
             tweet_link = self.username_search(username)
             self.update_latest_tweets(username, tweet_link)
 

@@ -96,6 +96,7 @@ class SlackBot:
                 os.system("pkill firefox")
             # self.twitter_api.sync_buffer_with_files()
 
+            print(f"### Done! ###")
             # sleep(random.choice([3,3.2,3.7,4, 5, 5.2]))
             sleep(random.choice([60*23, 60*20, 60*26, 60*29, 60*24, 60*30]))
             count+=1
