@@ -31,6 +31,7 @@ class SlackBot:
         # Create a Slack client
         self.slack_client = slack.WebClient(token=self._SLACK_API_TOKEN, ssl=self.ssl_context)
 
+        # TODO: CLI to add slack channels?
         self.slack_channels = ['#research']
 
     def notification_text_wrapper(self, real_content, **kwargv):
@@ -89,7 +90,6 @@ class SlackBot:
         the_pm_end = time(23, random.choice([50,51,52,53,54,55,56,57,58,59]))
 
         # Allow between ~6/7/8am - 11.59am, 12pm - 11pm
-        # TODO: Allow this return rule to manifest upon deployment
         return the_am_start <= current_time <= the_am_end or the_pm_start <= current_time <= the_pm_end 
         # return True 
 
@@ -97,7 +97,7 @@ class SlackBot:
         # breakpoint()
         count = 1
         while True:
-            print(f"### Run: {count} time: {datetime.now().time()}###")
+            print(f"####### Run: {count}; time: {datetime.now().time()}#######")
             current_time = datetime.now().time()
 
             if self.is_notification_unmute(current_time):
@@ -105,7 +105,7 @@ class SlackBot:
                 self.status_checker(self.filter_out_non_user_content)
                 self.sync_tweet_consumer_producer()
                 os.system("pkill firefox")
-            # self.twitter_api.sync_buffer_with_files()
+            self.twitter_api.sync_buffer_with_files()
 
             print(f"### Done! ###")
             sleep(random.choice([3,3.2,3.7,4, 5, 5.2]))

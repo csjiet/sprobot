@@ -194,7 +194,7 @@ class TwitterAPI:
             tweet_link = self.username_search(username)
             self.update_latest_tweets(username, tweet_link)
         
-        print(str(self.usr_latest_tweets))
+        # print(str(self.usr_latest_tweets))
         sleep(random.choice([1,2,4.3,4.75,5,3.14]))
         self.driver.close()
         self.driver.quit()
