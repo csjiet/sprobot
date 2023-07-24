@@ -1,6 +1,15 @@
 Slack API
 - Create a Slack API from [api.slack.com](api.slack.com)
 
+> How do I add Slack App (bot) to my Slack workspace and channel
+> 1. Visit `api.slack.com`
+> 2. Create app/ visit existing app and add app into workspace
+> 3. Go to the workspace in slack. Click "More" at the top left corner
+> 4. Click "Apps" and find your app
+> 5. Click on the app to add the app to the workspace
+> 6. Go to your Slack workspace and right click on the App. Then select a channel where your app would reside. 
+
 Twitter API
-- Create a developer portal from [developer.twitter.com](developer.twitter.com)
-- Tweet lookups (Documentation) [https://developer.twitter.com/en/docs/twitter-api/tweets/lookup/quick-start](https://developer.twitter.com/en/docs/twitter-api/tweets/lookup/quick-start)
+- Webscraping
+
+

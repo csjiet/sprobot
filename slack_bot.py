@@ -21,7 +21,7 @@ class SlackBot:
         # Retrieve Slack tokens
         config = configparser.ConfigParser()
         config.read(f'./twitter/config.ini')
-        self._SLACK_API_TOKEN = config.get('Credentials','slack_api_token')
+        self._SLACK_API_TOKEN = config.get('Credentials','slack_api_beta_token')
 
         # Preparing slack ssl context
         self.ssl_context = ssl.create_default_context()
@@ -32,7 +32,7 @@ class SlackBot:
         self.slack_client = slack.WebClient(token=self._SLACK_API_TOKEN, ssl=self.ssl_context)
 
         # TODO: CLI to add slack channels?
-        self.slack_channels = ['#research']
+        self.slack_channels = ['#sprobot_tests']
 
     def notification_text_wrapper(self, real_content, **kwargv):
         final_text = f"New tweet alert from @{kwargv['username']}!\n{real_content}\n" 
@@ -108,8 +108,8 @@ class SlackBot:
             self.twitter_api.sync_buffer_with_files()
 
             print(f"### Done! ###")
-            sleep(random.choice([3,3.2,3.7,4, 5, 5.2]))
-            # sleep(random.choice([60*23, 60*20, 60*26, 60*29, 60*24, 60*30]))
+            # sleep(random.choice([3,3.2,3.7,4, 5, 5.2]))
+            sleep(random.choice([60*23, 60*20, 60*26, 60*29, 60*24, 60*30]))
             count+=1
             # if count >= 20:
                 # break
