@@ -96,23 +96,28 @@ class SlackBot:
     def run(self):
         # breakpoint()
         count = 1
-        while True:
-            print(f"####### Run: {count}; time: {datetime.now().time()}#######")
-            current_time = datetime.now().time()
+        try:
+            while True:
+                print(f"####### Run: {count}; time: {datetime.now().time()}#######")
+                current_time = datetime.now().time()
 
-            if self.is_notification_unmute(current_time):
-                self.twitter_api.run()
-                self.status_checker(self.filter_out_non_user_content)
-                self.sync_tweet_consumer_producer()
-                os.system("pkill firefox")
-            self.twitter_api.sync_buffer_with_files()
+                if self.is_notification_unmute(current_time):
+                    self.twitter_api.run()
+                    self.status_checker(self.filter_out_non_user_content)
+                    self.sync_tweet_consumer_producer()
+                    os.system("pkill firefox")
+                self.twitter_api.sync_buffer_with_files()
 
-            print(f"### Done! ###")
-            # sleep(random.choice([3,3.2,3.7,4, 5, 5.2]))
-            sleep(random.choice([60*23, 60*20, 60*26, 60*29, 60*24, 60*30]))
-            count+=1
-            # if count >= 20:
-                # break
+                print(f"### Done! ###")
+                # sleep(random.choice([3,3.2,3.7,4, 5, 5.2]))
+                sleep(random.choice([60*23, 60*20, 60*26, 60*29, 60*24, 60*30]))
+                count+=1
+                # if count >= 20:
+                    # break
+
+        except: 
+            for channel in self.slack_channels:
+                self.slack_client.chat_postMessage(channel= channel, text= f"Sprobot stopped! @: {datetime.now().time()}")
 
 if __name__ == "__main__":
     bot = SlackBot()
