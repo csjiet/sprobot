@@ -116,8 +116,8 @@ class SlackBot:
                     # break
 
         except: 
-            for channel in self.slack_channels:
-                self.slack_client.chat_postMessage(channel= channel, text= f"Sprobot stopped! @: {datetime.now().time()}")
+           for channel in self.slack_channels:
+               self.slack_client.chat_postMessage(channel= channel, text= f"Sprobot stopped! @: {datetime.now().time()}")
 
 if __name__ == "__main__":
     bot = SlackBot()
