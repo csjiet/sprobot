@@ -109,7 +109,7 @@ class TwitterAPI:
 
         except Exception as e:
             # Proceed to normal login
-            print('Dang exception again')
+            print(f'Dang exception again: {str(type(e))} {str(e)}')
            
             sleep(3)
             # Reenter your password again
