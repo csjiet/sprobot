@@ -1,3 +1,4 @@
+import os
 import random
 import json
 import configparser
@@ -188,7 +189,17 @@ class TwitterAPI:
     # Webscraping cycle
     def run(self) -> None:
         self.driver = self.web_driver_init()
-        self.twitter_login()
+        try:
+            self.twitter_login()
+        except:
+            self.driver.close()
+            self.driver.quit()
+            self.driver = None
+            os.system("pkill firefox")
+            print("Timeout. Retry login in ~20min")
+            sleep(random.choice([60*20.2, 60*19.3]))
+            self.driver = self.web_driver_init()
+            self.twitter_login()
         for username in self.usernames:
             print(f"Searching @{username} ...")
             tweet_link = self.username_search(username)

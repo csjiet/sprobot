@@ -110,10 +110,10 @@ class SlackBot:
 
             print(f"### Done! ###")
             # sleep(random.choice([3,3.2,3.7,4, 5, 5.2]))
-            sleep(random.choice([60*23, 60*20, 60*26, 60*29, 60*24, 60*30]))
+            sleep(random.choice([60*23.32, 60*20.5, 60*26.12, 60*29.22, 60*24.33, 60*30.7]))
             count+=1
-            # if count >= 20:
-                # break
+            if count >= 40:
+                break
 
         # except Exception as e:
            # for channel in self.slack_channels:
