@@ -87,7 +87,7 @@ class SlackBot:
         the_am_end= time(11,59)
 
         the_pm_start = time(12, 0)
-        the_pm_end = time(23, random.choice([50,51,52,53,54,55,56,57,58,59]))
+        the_pm_end = time(22, random.choice([50,51,52,53,54,55,56,57,58,59]))
 
         # Allow between ~6/7/8am - 11.59am, 12pm - 11pm
         return the_am_start <= current_time <= the_am_end or the_pm_start <= current_time <= the_pm_end 
@@ -112,9 +112,6 @@ class SlackBot:
             # sleep(random.choice([3,3.2,3.7,4, 5, 5.2]))
             sleep(random.choice([60*23.32, 60*20.5, 60*26.12, 60*29.22, 60*24.33, 60*30.7]))
             count+=1
-            if count >= 40:
-                break
-
         # except Exception as e:
            # for channel in self.slack_channels:
                # self.slack_client.chat_postMessage(channel= channel, text= f"Sprobot stopped! @: {datetime.now().time()}")

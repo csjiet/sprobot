@@ -81,7 +81,7 @@ class TwitterAPI:
             next_button.click()
 
             # Wait for the next page to load before continuing
-            sleep(random.choice([5,6.3]))
+            sleep(random.choice([5.234,6.3]))
 
             unusual_activity_detection = self.driver.find_element(By.XPATH, "//span[contains(text(), 'There was unusual login')]")
             unusual_username = self.driver.find_element(By.XPATH, "//input[@name='text']")
@@ -98,7 +98,7 @@ class TwitterAPI:
             sleep(1)
             reenter_password.click()
             reenter_password.send_keys(config.get('Credentials', 'password'))
-            sleep(random.choice([1,1.43]))
+            sleep(random.choice([1.36,1.43]))
 
 
             # Click Log in
@@ -118,7 +118,7 @@ class TwitterAPI:
             sleep(1)
             reenter_password.click()
             reenter_password.send_keys(config.get('Credentials', 'password'))
-            sleep(random.choice([1,2]))
+            sleep(random.choice([1.1,2.1]))
 
             # Click Log in
             # Find the 'Log in' button using its XPATH and click it to log in
