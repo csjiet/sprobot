@@ -9,6 +9,12 @@ Slack API
 > 5. Click on the app to add the app to the workspace
 > 6. Go to your Slack workspace and right click on the App. Then select a channel where your app would reside. 
 
+> How to add your bot to a Slack channel within your workspace?
+> 1. Go to the channel of interest
+> 2. Click the name of the channel on the top left
+> 3. Go to "Integrations"
+> 4. Go to the "Apps" section and add your Slack bot.
+
 Twitter API
 - Webscraping
 

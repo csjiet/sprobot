@@ -128,6 +128,11 @@ class TwitterAPI:
        
     def update_latest_tweets(self, username, tweet_link) -> None:
 
+        # Only update if it is a non-null value
+        if self.usr_latest_tweets[username] is not None and tweet_link is None:
+            return
+
+
         self.usr_latest_tweets[username] = tweet_link
 
     def username_search(self, username) -> None:

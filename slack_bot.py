@@ -32,7 +32,8 @@ class SlackBot:
         self.slack_client = slack.WebClient(token=self._SLACK_API_TOKEN, ssl=self.ssl_context)
 
         # TODO: CLI to add slack channels?
-        self.slack_channels = ['#sprobot_tests']
+        # self.slack_channels = ['#sprobot_tests']
+        self.slack_channels = ['#general']
 
     def notification_text_wrapper(self, real_content, **kwargv):
         final_text = f"New tweet alert from @{kwargv['username']}!\n{real_content}\n" 
@@ -98,19 +99,24 @@ class SlackBot:
         count = 1
         # try:
         while True:
-            print(f"####### Run: {count}; time: {datetime.now().time()}#######")
-            current_time = datetime.now().time()
+            try:
+                print(f"####### Run: {count}; time: {datetime.now().time()}#######")
+                current_time = datetime.now().time()
 
-            if self.is_notification_unmute(current_time):
-                self.twitter_api.run()
-                self.status_checker(self.filter_out_non_user_content)
-                self.sync_tweet_consumer_producer()
+                if self.is_notification_unmute(current_time):
+                    self.twitter_api.run()
+                    self.status_checker(self.filter_out_non_user_content)
+                    self.sync_tweet_consumer_producer()
+                    os.system("pkill firefox")
+                self.twitter_api.sync_buffer_with_files()
+
+                print(f"### Done! ###")
+                # sleep(random.choice([3,3.2,3.7,4, 5, 5.2]))
+                sleep(random.choice([60*33.32, 60*30.5, 60*36.12, 60*29.22, 60*34.33, 60*30.7]))
+            except Exception as e:
                 os.system("pkill firefox")
-            self.twitter_api.sync_buffer_with_files()
-
-            print(f"### Done! ###")
-            # sleep(random.choice([3,3.2,3.7,4, 5, 5.2]))
-            sleep(random.choice([60*23.32, 60*20.5, 60*26.12, 60*29.22, 60*24.33, 60*30.7]))
+                sleep(random.choice([60*120.32, 60*60.11, 60*120.45]))
+                pass
             count+=1
         # except Exception as e:
            # for channel in self.slack_channels:
