@@ -33,7 +33,7 @@ class SlackBot:
 
         # TODO: CLI to add slack channels?
         # self.slack_channels = ['#sprobot_tests']
-        self.slack_channels = ['#general']
+        self.slack_channels = ['#twitter']
 
     def notification_text_wrapper(self, real_content, **kwargv):
         final_text = f"New tweet alert from @{kwargv['username']}!\n{real_content}\n" 

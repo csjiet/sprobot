@@ -3,7 +3,9 @@ sprocket_lab
 dyhadila
 zihengh1
 harit_v
+nick11roberts
 Changho_Shin_
 jzhao326
 WisconsinCS
 iclr_conf
+AutoML_Cup
