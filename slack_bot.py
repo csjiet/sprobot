@@ -32,8 +32,8 @@ class SlackBot:
         self.slack_client = slack.WebClient(token=self._SLACK_API_TOKEN, ssl=self.ssl_context)
 
         # TODO: CLI to add slack channels?
-        # self.slack_channels = ['#sprobot_tests']
-        self.slack_channels = ['#twitter']
+        self.slack_channels = ['#sprobot_tests']
+        #self.slack_channels = ['#twitter']
 
     def notification_text_wrapper(self, real_content, **kwargv):
         final_text = f"New tweet alert from @{kwargv['username']}!\n{real_content}\n" 
@@ -44,7 +44,7 @@ class SlackBot:
             if content is not None:
                 self.slack_client.chat_postMessage(channel= channel, text=content)
 
-    def filter_out_non_user_content(self, **kw) -> bool:
+    def isSlackNotifiable(self, **kw) -> bool:
         
         if kw['v'] is None:
             return False
@@ -55,7 +55,7 @@ class SlackBot:
 
         return False
 
-    # TODO: filter_func should filter tweet that should be notified
+    # Check if tweet should be notified in Slack
     def status_checker(self, filter_func):
         consumer = self.latest_usr_tweet_pair
         producer = self.twitter_api.get_user_latest_tweets()
@@ -65,16 +65,16 @@ class SlackBot:
 
         # Check if consumer - local copy of user-tweet pair and producer - twitter api tweets are in sync
         for key in producer:
+            # If a new username from producer twitter_api is not yet in slack_bot consumer 
             if key not in consumer:
 
-                # Key is not in consumer, so add into consumer
-                self.latest_usr_tweet_pair[key] = producer[key]
-
+                # If filter func allows notification, then send alarm  
                 if filter_func(k= key, v= producer[key]):
                     content = self.notification_text_wrapper(producer[key], username = key)
                     self.notification_alarm(content)
-                    continue
+                continue
 
+            # When local slack_bot consumer buffer detects a new tweet returned from producer twitter_api and filter func allows notification, then send alarm
             if consumer[key] != producer[key] and filter_func(k = key, v = producer[key]):
                 content = self.notification_text_wrapper(producer[key], username = key)
                 self.notification_alarm(content)
@@ -95,7 +95,6 @@ class SlackBot:
         # return True 
 
     def run(self):
-        # breakpoint()
         count = 1
         # try:
         while True:
@@ -105,7 +104,7 @@ class SlackBot:
 
                 if self.is_notification_unmute(current_time):
                     self.twitter_api.run()
-                    self.status_checker(self.filter_out_non_user_content)
+                    self.status_checker(self.isSlackNotifiable)
                     self.sync_tweet_consumer_producer()
                     os.system("pkill firefox")
                 self.twitter_api.sync_buffer_with_files()

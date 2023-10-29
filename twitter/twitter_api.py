@@ -3,6 +3,8 @@ import random
 import json
 import configparser
 import sys
+import copy
+import datetime 
 from time import sleep
 from selenium import webdriver
 from selenium.webdriver.common import desired_capabilities
@@ -22,19 +24,22 @@ class TwitterAPI:
         self.driver = None 
         self.usernames = self.file_management.read_all_usernames_from_file()
 
-        self.usr_latest_tweets = {}
-        
         with open(f"./twitter/users_latest_tweets.json") as jsonfile:
             self.usr_latest_tweets = json.load(jsonfile) 
 
         # Sync the user-tweet pairs to list of usernames from username.txt
-        self.usr_latest_tweets = {key: self.usr_latest_tweets[key] for key in self.usernames if key in self.usr_latest_tweets}
+        #self.usr_latest_tweets = {key: self.usr_latest_tweets[key] for key in self.usernames if key in self.usr_latest_tweets}
+        #for key in self.usernames:
+        #    if key not in self.usr_latest_tweets:
+        #        self.usr_latest_tweets[key] = None
+                
 
     def get_usernames(self):
         return self.usernames
 
     def get_user_latest_tweets(self):
-        return self.usr_latest_tweets.copy()
+        #return self.usr_latest_tweets.copy()
+        return copy.deepcopy(self.usr_latest_tweets)
 
     def web_driver_init(self):
         # Create Firefox options object
@@ -126,14 +131,24 @@ class TwitterAPI:
             log_in.click()
 
        
-    def update_latest_tweets(self, username, tweet_link) -> None:
+    def update_latest_tweets(self, username, scraped_tweet_link, tweet_date) -> None:
 
-        # Only update if it is a non-null value
-        if self.usr_latest_tweets[username] is not None and tweet_link is None:
-            return
+        if username not in self.usr_latest_tweets:
+            self.usr_latest_tweets[username] = None
 
+        prev_user_tweet = self.usr_latest_tweets[username]
 
-        self.usr_latest_tweets[username] = tweet_link
+        # If user had a tweet in record 
+        isDifferentStoredTweet = prev_user_tweet != scraped_tweet_link 
+
+        # If it is not a fresh tweet
+        islatest = tweet_date == datetime.datetime.today().strftime("%Y-%m-%d")
+        print(prev_user_tweet, scraped_tweet_link)
+        print(isDifferentStoredTweet, islatest)
+
+        # Store tweets into buffer 
+        if isDifferentStoredTweet and islatest:
+            self.usr_latest_tweets[username] = scraped_tweet_link
 
     def username_search(self, username) -> None:
         # Search account
@@ -149,39 +164,43 @@ class TwitterAPI:
             action = ActionChains(self.driver)
 
             source = self.driver.find_elements(By.XPATH, "//div[@data-testid='tweetText']")[0]
+            date_list = self.driver.find_elements(By.XPATH, "//time") 
+            date_str = date_list[0].get_attribute('datetime')# Take the first date from the list
+            tweet_date = datetime.datetime.strptime(date_str, "%Y-%m-%dT%H:%M:%S.%fZ").strftime("%Y-%m-%d")
+            #print(tweet_date, datetime.date.today(), tweet_date > datetime.datetime.today().strftime("%Y-%m-%d"))
             action.move_to_element(source).click().perform()
-            return self.driver.current_url
+            return self.driver.current_url, tweet_date
 
 
         except Exception as e:
             print(f"Non fatal exception was caught: {type(e)} + {e}")
 
-    # Add username to username buffer 
-    def add_username(self, username_to_add) -> None:
+    ## Add username to username buffer 
+    #def add_username(self, username_to_add) -> None:
 
-        # Check if username has already been added
-        if username_to_add in self.usernames:
-            return
+    #    # Check if username has already been added
+    #    if username_to_add in self.usernames:
+    #        return
 
-        # Append object to username buffer
-        self.usernames.append(username_to_add)
+    #    # Append object to username buffer
+    #    self.usernames.append(username_to_add)
 
-        # Add object as key to the username-tweet dictionary
-        self.usr_latest_tweets.setdefault(username_to_add, None)
+    #    # Add object as key to the username-tweet dictionary
+    #    self.usr_latest_tweets.setdefault(username_to_add, None)
 
 
-    # Remove username from username buffer 
-    def remove_username(self, username_to_remove) -> None:
+    ## Remove username from username buffer 
+    #def remove_username(self, username_to_remove) -> None:
 
-        # Check if username has already been removed
-        if username_to_remove not in self.usernames:
-            return
+    #    # Check if username has already been removed
+    #    if username_to_remove not in self.usernames:
+    #        return
 
-        # Remove object from usernames list
-        self.usernames = [usr for usr in self.usernames if usr != username_to_remove]
+    #    # Remove object from usernames list
+    #    self.usernames = [usr for usr in self.usernames if usr != username_to_remove]
 
-        # Remove key value pair where key matches removed username
-        self.usr_latest_tweets = {key: value for key, value in self.usr_latest_tweets.items() if key in self.usernames}
+    #    # Remove key value pair where key matches removed username
+    #    self.usr_latest_tweets = {key: value for key, value in self.usr_latest_tweets.items() if key in self.usernames}
 
 
     # Write all buffers to files
@@ -207,8 +226,13 @@ class TwitterAPI:
             self.twitter_login()
         for username in self.usernames:
             print(f"Searching @{username} ...")
-            tweet_link = self.username_search(username)
-            self.update_latest_tweets(username, tweet_link)
+            try:
+                tweet_link, tweet_date = self.username_search(username)
+                self.update_latest_tweets(username, tweet_link, tweet_date)
+            except:
+                # If TypeError: cannot unpack non-iterable NoneType objectis thrown from failed scraping
+                continue
+
         
         # print(str(self.usr_latest_tweets))
         sleep(random.choice([1,2,4.3,4.75,5,3.14]))
