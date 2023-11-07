@@ -143,8 +143,8 @@ class TwitterAPI:
 
         # If it is not a fresh tweet
         islatest = tweet_date == datetime.datetime.today().strftime("%Y-%m-%d")
-        print(prev_user_tweet, scraped_tweet_link)
-        print(isDifferentStoredTweet, islatest)
+        #print(prev_user_tweet, scraped_tweet_link)
+        #print(isDifferentStoredTweet, islatest)
 
         # Store tweets into buffer 
         if isDifferentStoredTweet and islatest:
