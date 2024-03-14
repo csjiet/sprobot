@@ -48,7 +48,7 @@ class TwitterAPI:
         # Checks if device has a monitor 
         driver = None
         try:
-            driver = webdriver.Firefox(options=firefox_options) 
+            driver = webdriver.Firefox(options=firefox_options, executable_path = '../geckodriver') 
 
         # If device does nto have a monitor, run browser using the headless option
         except Exception as e:

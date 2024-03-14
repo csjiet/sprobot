@@ -3,3 +3,9 @@
 /env/
 **/__pycache__/*
 geckodriver.log
+*.tar.gz
+*.un~
+
+twitter/.twitter_api.py.un~
+twitter/geckodriver
+
