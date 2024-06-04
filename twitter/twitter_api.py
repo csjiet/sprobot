@@ -52,7 +52,7 @@ class TwitterAPI:
 
         # If device does nto have a monitor, run browser using the headless option
         except Exception as e:
-            firefox_options.add_argument("--headless")
+            firefox_options.add_argument("--headless") # Comment if debugging on device with monitor
             firefox_options.add_argument("--enable-javascript")
             firefox_options.add_argument("start-maximized")
             firefox_options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)")
@@ -70,6 +70,7 @@ class TwitterAPI:
     def twitter_login(self) -> None:
         # Login Twitter
         try:
+            # Guide to find XPATH identifiers from html inspect: https://www.browserstack.com/guide/find-element-by-xpath-in-selenium
             config = configparser.ConfigParser()
             config.read('./twitter/config.ini')
 
@@ -81,8 +82,8 @@ class TwitterAPI:
             username.send_keys(config.get('Credentials', 'email'))
             sleep(random.choice([1,3,1.2]))
 
-            # Find the 'Next' button (second last button (idx: -2)) using its XPATH and click it to move to the password field
-            next_button = self.driver.find_elements(By.XPATH,"//div[@role='button']")[-2]
+            # Find the 'Next' button (third last button (idx: -3)) using its TAGNAME and click it to move to the password field
+            next_button = self.driver.find_elements(By.TAG_NAME,"button")[-3]
             next_button.click()
 
             # Wait for the next page to load before continuing
