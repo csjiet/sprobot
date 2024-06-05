@@ -143,7 +143,7 @@ class TwitterAPI:
         isDifferentStoredTweet = prev_user_tweet != scraped_tweet_link 
 
         # If it is not a fresh tweet
-        # islatest = tweet_date == datetime.datetime.today().strftime("%Y-%m-%d")
+        tweet_date = datetime.datetime.strptime(tweet_date, "%Y-%m-%d").date() # Convert string to date
         todays_date = datetime.datetime.today().date()
         difference = todays_date - tweet_date
         fresh_within = datetime.timedelta(days=1, hours=12) # If tweet is posted within 1 day and 12 hours/ 1.5 days from today
@@ -235,6 +235,7 @@ class TwitterAPI:
             print(f"Searching @{username} ...")
             try:
                 tweet_link, tweet_date = self.username_search(username)
+                print('--- Result scraped: ', tweet_link, tweet_date)
                 self.update_latest_tweets(username, tweet_link, tweet_date)
             except:
                 # If TypeError: cannot unpack non-iterable NoneType objectis thrown from failed scraping
