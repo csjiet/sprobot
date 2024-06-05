@@ -102,7 +102,8 @@ class SlackBot:
                 print(f"####### Run: {count}; time: {datetime.now().time()}#######")
                 current_time = datetime.now().time()
 
-                if self.is_notification_unmute(current_time):
+                # if self.is_notification_unmute(current_time):
+                if True:
                     self.twitter_api.run()
                     self.status_checker(self.isSlackNotifiable)
                     self.sync_tweet_consumer_producer()

@@ -143,7 +143,13 @@ class TwitterAPI:
         isDifferentStoredTweet = prev_user_tweet != scraped_tweet_link 
 
         # If it is not a fresh tweet
-        islatest = tweet_date == datetime.datetime.today().strftime("%Y-%m-%d")
+        # islatest = tweet_date == datetime.datetime.today().strftime("%Y-%m-%d")
+        todays_date = datetime.datetime.today().date()
+        difference = todays_date - tweet_date
+        fresh_within = datetime.timedelta(days=1, hours=12) # If tweet is posted within 1 day and 12 hours/ 1.5 days from today
+        islatest = difference <= fresh_within
+
+
         #print(prev_user_tweet, scraped_tweet_link)
         #print(isDifferentStoredTweet, islatest)
 
