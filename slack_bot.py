@@ -32,8 +32,8 @@ class SlackBot:
         self.slack_client = slack.WebClient(token=self._SLACK_API_TOKEN, ssl=self.ssl_context)
 
         # TODO: CLI to add slack channels?
-        self.slack_channels = ['#sprobot_tests']
-        #self.slack_channels = ['#twitter']
+        # self.slack_channels = ['#sprobot_tests']
+        self.slack_channels = ['#twitter']
 
     def notification_text_wrapper(self, real_content, **kwargv):
         final_text = f"New tweet alert from @{kwargv['username']}!\n{real_content}\n" 
@@ -102,8 +102,8 @@ class SlackBot:
                 print(f"####### Run: {count}; time: {datetime.now().time()}#######")
                 current_time = datetime.now().time()
 
-                # if self.is_notification_unmute(current_time):
-                if True:
+                # if True: # For debugging. To disable notification unmute feature at midnight
+                if self.is_notification_unmute(current_time):
                     self.twitter_api.run()
                     self.status_checker(self.isSlackNotifiable)
                     self.sync_tweet_consumer_producer()
